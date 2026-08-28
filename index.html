@@ -47,14 +47,51 @@ button.primary{background:#2456a6;color:#fff;border-color:#2456a6}
 .speaking-box{margin-top:18px;padding-top:16px;border-top:1px dashed #ccd5e1}.speaking-title{font-weight:900;margin-bottom:7px}.target-word{font-size:25px;font-weight:900;margin:7px 0}.speaking-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.speech-status{margin-top:9px;color:#667085;min-height:22px}.speech-result{margin-top:7px;padding:9px 11px;background:#f7f8fa;border-radius:10px;min-height:40px}.play-word{margin-top:7px;border:1px solid #cfd7e4;background:#fff;border-radius:8px;padding:6px 9px;cursor:pointer;font-size:13px}@media(max-width:700px){.speaking-actions{flex-direction:column}.speaking-actions .action{width:100%}}
 
 .review-sentence{margin-top:8px;font-size:13px;line-height:1.55;color:#475467;background:#f8fafc;border-radius:8px;padding:8px}.review-sentence strong{color:#2456a6}
-.sentence-zh{margin-top:5px;color:#15803d;font-weight:600}</style>
+.sentence-zh{margin-top:5px;color:#15803d;font-weight:600}
+.tabs{max-width:980px;margin:14px auto 0;display:flex;gap:8px;padding:0 14px}.tab{flex:1;border:1px solid #d7dee9;background:#fff;border-radius:12px;padding:12px;font-weight:900;cursor:pointer}.tab.active{background:#2456a6;color:#fff;border-color:#2456a6}.speaking-page{max-width:980px;margin:0 auto;padding:22px 14px 40px}.sp-question{margin-top:16px;background:linear-gradient(135deg,#f7faff,#fffaf2);border:1px solid #e2e8f0;border-radius:17px;padding:22px}.sp-q{font-size:25px;font-weight:900;line-height:1.4;margin:9px 0}.sp-zh{font-size:17px;color:#15803d;font-weight:700}.sp-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}.sp-answer{margin-top:16px;padding:17px;background:#f7fbf8;border:1px solid #b7dfc8;border-radius:15px}.sp-answer #spAnswerEn{font-size:18px;font-weight:800;line-height:1.6;margin:8px 0}.sp-answer #spAnswerZh{color:#15803d;line-height:1.6;margin-bottom:12px}.sp-vocab{margin-top:15px;color:#667085;font-size:13px;line-height:1.6}.sp-nav{max-width:980px;margin:0 auto 40px;display:flex;justify-content:space-between;padding:0 14px}.hidden{display:none!important}@media(max-width:700px){.sp-actions{flex-direction:column}.sp-actions .action{width:100%}.sp-q{font-size:21px}}
+</style>
 </head>
 <body>
 <header><div class="header-inner">
 <h1>Engineering English｜隨機選擇題</h1>
 <div class="subtitle">Mechanical / DFM / Thermal / Sealing / Optics / IoT / IP Camera</div>
 </div></header>
-<main>
+<div class="tabs-wrap">
+<div class="tabs">
+<button id="tabQuiz" class="tab active" type="button">📚 單字選擇題</button>
+<button id="tabSpeaking" class="tab" type="button">🎙️ 口說面試練習</button>
+</div>
+<div id="speakingPage" class="speaking-page hidden">
+  <div class="card">
+    <div class="progress"><strong id="spProgress"></strong><span class="badge">Sr. Mechanical Engineer</span></div>
+    <div class="sp-question">
+      <div class="label">INTERVIEW QUESTION</div>
+      <div id="spQuestion" class="sp-q"></div>
+      <div id="spChinese" class="sp-zh"></div>
+      <div class="sp-actions">
+        <button id="spPlayQ" class="action" type="button">🔊 播放問題</button>
+        <button id="spStart" class="action primary" type="button">🎙 開始口說</button>
+      </div>
+    </div>
+    <div id="spStatus" class="speech-status">先聽問題，再用英文回答。</div>
+    <div id="spTranscript" class="speech-result">尚未辨識你的回答</div>
+  </div>
+  <div class="card">
+    <button id="spShow" class="action" type="button">💡 顯示參考答案</button>
+    <div id="spAnswer" class="sp-answer hidden">
+      <div class="label">REFERENCE ANSWER</div>
+      <div id="spAnswerEn"></div>
+      <div id="spAnswerZh"></div>
+      <button id="spPlayA" class="action" type="button">🔊 播放參考答案</button>
+    </div>
+    <div class="sp-vocab"><strong>面試練習重點：</strong> 用完整句子回答，不需要逐字背誦；先講結論，再補方法與結果。</div>
+  </div>
+  <div class="sp-nav">
+    <button id="spPrev" class="action" type="button">⬅ 上一題</button>
+    <button id="spNext" class="action primary" type="button">下一題 ➡</button>
+  </div>
+</div>
+</div><main id="quizPage">
 <section class="card">
 <div class="progress"><strong id="progress">載入中…</strong><span id="badge" class="badge">工程英文</span></div>
 <div class="focus"><div class="focus-label">請選出正確的英文</div><div id="meaning" class="meaning">載入中…</div>
@@ -279,6 +316,49 @@ function refreshSpeakingButtons(){
     if(t&&x)t.textContent=x[0];
   }
 }
+
+const SPEAKING_QUESTIONS=[["Tell me about yourself and your mechanical engineering experience.", "請介紹你自己以及你的機構工程經驗。", "I have nine years of experience in mechanical engineering, mainly focusing on product design, manufacturing, tolerance analysis, and validation. I also have experience working with cross-functional teams and suppliers."], ["How do you approach a new mechanical design project?", "你會如何著手一個新的機構設計專案？", "I first clarify the requirements and constraints. Then I develop concepts, evaluate the trade-offs, build prototypes, and validate the design before moving to mass production."], ["How do you handle a mechanical interference issue?", "你如何處理機構干涉問題？", "I first reproduce the issue under the same assembly conditions. Then I check the dimensions and tolerance stack-up to identify the actual interference point."], ["How do you perform a tolerance stack-up analysis?", "你如何進行公差堆疊分析？", "I first identify the functional requirement and the critical dimensions. Then I perform a worst-case or statistical analysis and compare the result with the allowable clearance."], ["What is the difference between worst-case analysis and RSS?", "最壞情況分析和 RSS 有什麼不同？", "Worst-case analysis assumes all tolerances shift in the same direction, while RSS estimates the statistical variation when the dimensions are independent."], ["How do you decide whether a tolerance is too tight?", "你如何判斷一個公差是否太緊？", "I compare the functional requirement with the manufacturing capability and inspection capability. If a tight tolerance does not improve function, I would consider relaxing it."], ["How do you apply GD&T in mechanical design?", "你如何在機構設計中應用 GD&T？", "I use datums and geometric tolerances to control the features that affect assembly and function, rather than relying only on plus-and-minus dimensions."], ["How do you work with a supplier when there is a tooling issue?", "當供應商遇到模具問題時，你如何合作？", "I first clarify the defect and collect data. Then I work with the supplier to identify the root cause, evaluate the tooling change, and verify the corrective action."], ["What is DFM and why is it important?", "什麼是 DFM？為什麼重要？", "DFM means design for manufacturability. It helps ensure that the design can be produced consistently with reasonable cost, yield, and cycle time."], ["How do you reduce injection-molding defects?", "你如何降低射出成型缺陷？", "I review wall thickness, draft angle, gate location, cooling, and mold venting. I also use mold-flow analysis when necessary to predict potential defects."], ["How would you design a plastic housing for an IP camera?", "你會如何設計一個 IP Camera 的塑膠外殼？", "I would consider waterproofing, wall thickness, ribs, screw bosses, draft angle, optical alignment, thermal performance, and assembly requirements from the beginning."], ["How do you prevent water ingress in an outdoor camera?", "你如何防止戶外攝影機進水？", "I would define the sealing interface carefully and control the gasket or O-ring compression. Then I would validate the design with leak, pressure, and environmental tests."], ["How would you improve the thermal performance of an IP camera?", "你會如何改善 IP Camera 的散熱？", "I would identify the main heat sources, define the thermal path, and evaluate conduction, convection, and radiation. Then I would use simulation and testing to optimize the design."], ["How do you deal with thermal expansion affecting optical alignment?", "你如何處理熱膨脹造成的光學對位問題？", "I would compare the CTE of the lens, housing, PCB, and mounting structure. Then I would use tolerance and thermal analysis to predict the alignment shift."], ["How do you investigate a vibration problem?", "你如何調查振動問題？", "I would reproduce the vibration under controlled conditions, measure the frequency response, and check the natural frequency, stiffness, damping, and mounting conditions."], ["Tell me about a difficult mechanical problem you solved.", "請分享一個你解決過的困難機構問題。", "One difficult problem involved a mechanical interference during assembly. I reproduced the issue, analyzed the tolerance stack-up, confirmed the root cause, and changed the locating features."], ["How do you prioritize engineering issues?", "你如何安排工程問題的優先順序？", "I prioritize issues based on safety, customer impact, reliability risk, schedule impact, and the difficulty of containment."], ["How do you communicate with electrical and optical engineers?", "你如何與電子及光學工程師溝通？", "I first align on the interface requirements and constraints. Then I use clear drawings, data, and prototypes to make technical decisions together."], ["How do you handle a disagreement with another engineer?", "如果和另一位工程師意見不同，你會怎麼做？", "I focus on the technical requirements and data rather than personal opinions. If necessary, I build a quick experiment or prototype to compare the two concepts."], ["How do you ensure a design is ready for mass production?", "你如何確認設計已經可以量產？", "I review DFM, tolerance, tooling, reliability, assembly, inspection, and supplier capability. I also confirm that validation results meet the requirements."], ["What would you check before releasing an engineering drawing?", "在釋出工程圖前，你會檢查什麼？", "I check critical dimensions, GD&T, datums, material, surface finish, revision, notes, and whether the drawing clearly communicates the functional requirements."], ["How do you use FEA in your design process?", "你如何在設計流程中使用 FEA？", "I use FEA to compare concepts and identify high-stress or high-deflection areas. I then correlate the simulation with physical test results."], ["What is your approach to root cause analysis?", "你的根因分析方法是什麼？", "I first reproduce the failure and collect evidence. Then I separate symptoms from causes, isolate variables, and verify the suspected root cause with a controlled test."], ["How do you handle an engineering change late in the project?", "如果專案後期需要工程變更，你會怎麼處理？", "I evaluate the impact on function, tooling, schedule, cost, and validation. Then I align with the stakeholders and document the change through the proper engineering change process."], ["What is the most important consideration when designing a camera lens mount?", "設計攝影機鏡頭固定結構時，最重要的考量是什麼？", "Optical alignment and mechanical stability are critical. I would also consider tolerance stack-up, thermal expansion, vibration, assembly repeatability, and the lens interface."], ["How would you improve the reliability of a screw boss?", "你會如何提升螺絲柱的可靠度？", "I would review the boss diameter, wall thickness, fillet radius, screw engagement, material, and torque requirement. I would then validate the design with torque and environmental testing."], ["How do you reduce cost without sacrificing quality?", "你如何在不犧牲品質的情況下降低成本？", "I look for unnecessary features, excessive tolerances, complex tooling, and redundant assembly steps. The goal is to simplify the design while maintaining the functional requirements."], ["What is a design trade-off you commonly face?", "你常遇到什麼樣的設計取捨？", "A common trade-off is between stiffness, weight, cost, and manufacturability. I compare the impact of each option against the most important product requirement."], ["How do you validate a mechanical design?", "你如何驗證機構設計？", "I define the critical risks first, then create a validation plan covering dimensional, functional, thermal, vibration, environmental, and reliability tests as needed."], ["Why should we hire you as a mechanical engineer?", "為什麼我們應該聘用你當機構工程師？", "I bring practical mechanical design and manufacturing experience, and I am comfortable working across design, suppliers, testing, and production. I focus on solving problems with data and driving issues to closure."]];
+let spIndex=0;
+function showTab(which){
+  const q=document.getElementById("quizPage"), s=document.getElementById("speakingPage");
+  const tq=document.getElementById("tabQuiz"), ts=document.getElementById("tabSpeaking");
+  const quiz=which==="quiz";
+  q.classList.toggle("hidden",!quiz); s.classList.toggle("hidden",quiz);
+  tq.classList.toggle("active",quiz); ts.classList.toggle("active",!quiz);
+  if(!quiz) renderSpeaking();
+}
+function renderSpeaking(){
+  const x=SPEAKING_QUESTIONS[spIndex];
+  document.getElementById("spProgress").textContent=`題目 ${spIndex+1} / ${SPEAKING_QUESTIONS.length}`;
+  document.getElementById("spQuestion").textContent=x[0];
+  document.getElementById("spChinese").textContent=x[1];
+  document.getElementById("spTranscript").textContent="尚未辨識你的回答";
+  document.getElementById("spStatus").textContent="先聽問題，再用英文回答。";
+  document.getElementById("spAnswer").classList.add("hidden");
+  document.getElementById("spAnswerEn").textContent=x[2];
+  document.getElementById("spAnswerZh").textContent=x[1];
+  document.getElementById("spPlayQ").onclick=()=>speakEnglish(x[0]);
+  document.getElementById("spPlayA").onclick=()=>speakEnglish(x[2]);
+}
+document.getElementById("tabQuiz").onclick=()=>showTab("quiz");
+document.getElementById("tabSpeaking").onclick=()=>showTab("speaking");
+document.getElementById("spShow").onclick=()=>document.getElementById("spAnswer").classList.remove("hidden");
+document.getElementById("spPrev").onclick=()=>{spIndex=(spIndex-1+SPEAKING_QUESTIONS.length)%SPEAKING_QUESTIONS.length;renderSpeaking()};
+document.getElementById("spNext").onclick=()=>{spIndex=(spIndex+1)%SPEAKING_QUESTIONS.length;renderSpeaking()};
+document.getElementById("spStart").onclick=()=>{
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){document.getElementById("spStatus").textContent="此瀏覽器不支援語音辨識，建議使用最新版 Chrome。";return}
+ const r=new SR();r.lang="en-US";r.interimResults=false;r.maxAlternatives=3;
+ document.getElementById("spStatus").textContent="🎙 正在聽，請用英文回答…";
+ document.getElementById("spTranscript").textContent="辨識中…";
+ r.onresult=e=>{
+   document.getElementById("spTranscript").textContent=e.results[0][0].transcript;
+   document.getElementById("spStatus").textContent="✅ 已完成語音辨識。請查看你的回答，再與參考答案比較。";
+ };
+ r.onerror=e=>document.getElementById("spStatus").textContent="語音辨識失敗："+e.error;
+ try{r.start()}catch(e){document.getElementById("spStatus").textContent="無法啟動語音辨識，請再按一次。"}
+};
+renderSpeaking();
 </script>
 </body>
 </html>
