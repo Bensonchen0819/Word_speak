@@ -1,4 +1,5 @@
-# Engineering English — Speaking / Pronunciation Fixed
+# Engineering English — Speaking Target Fixed
 
-The post-answer review uses the exact four choices from the question.
-Each of the four choices has its own visible “🔊 播放發音” button.
+The speaking practice target is synchronized with the current question.
+When moving to the next question, “請朗讀正確答案” updates immediately.
+The four post-answer choices remain the exact four choices shown for that question, each with its own pronunciation button.

@@ -117,6 +117,10 @@ function render(){
  document.getElementById("progress").textContent=`題目 ${state.index+1} / ${state.quiz.length}`;
  document.getElementById("badge").textContent=categoryName(x[6]);
  document.getElementById("meaning").textContent=`「${x[1]}」`;
+// 口說區的「正確答案」永遠跟著目前題目同步
+const targetWordEl=document.getElementById("targetWord");
+if(targetWordEl) targetWordEl.textContent=x[0];
+
  document.getElementById("score").textContent=state.score;
  document.getElementById("total").textContent=state.quiz.length;
 
@@ -217,7 +221,10 @@ function setupSpeaking(){
  document.querySelectorAll(".play-word").forEach(btn=>{
    btn.addEventListener("click",()=>speakEnglish(btn.dataset.speak));
  });
- document.getElementById("playTarget").onclick=()=>{if(x)speakEnglish(x[0])};
+ document.getElementById("playTarget").onclick=()=>{
+  const current=state.quiz[state.index];
+  if(current) speakEnglish(current[0]);
+};
  document.getElementById("startSpeaking").onclick=()=>{
    if(!state.answered){
      document.getElementById("speechStatus").textContent="請先完成這一題的選擇題。";
